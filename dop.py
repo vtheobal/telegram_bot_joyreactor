@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup as b
 import json
 import requests
 
-def pars_new_post(URL):
+def pars_new_post(URL, user_id):
 
     # парснг часть, которая пробегается по всем постам (на выходе есть список,  но чуть ниже не могу его обработать в for цикле)
     r = requests.get(URL)
@@ -15,7 +15,7 @@ def pars_new_post(URL):
     # for g in page_2:    #показыват все списки class_="link"
     #     print(g)
 
-    list =[]
+    list =[]                                        # данный блок собирает ссылки на посты для команды /go по url указанным в json
     for item in page_2:
         item_url = item.get("href")
         list.append(item_url)
@@ -24,7 +24,7 @@ def pars_new_post(URL):
 
 
     # открытие файла в переменную мета и его вывод
-    with open('spisok.json', 'r') as file:  
+    with open(user_id+'.json', 'r') as file:  
         meta = json.load(file)
     file.close()
 
@@ -36,7 +36,7 @@ def pars_new_post(URL):
 
 
     # проверка всех постов на странице на соответствие посту из json (если находит совпадение с постом из json - завершает цыкл)
-    list_exit =[]  #создание списка для выгрузки всех постов до последнего из json
+    list_exit =[]  #создание списка для выгрузки всех постов до последнего из ссылок в json
     for item in page_2:
         item_url = item.get("href")
         if (item_url != last_post):
@@ -52,7 +52,7 @@ def pars_new_post(URL):
     print(meta)
 
     # переписываем последний пост в json файле
-    with open('spisok.json', 'w') as file:  
+    with open(user_id+'.json', 'w') as file:  
         json.dump(meta, file, indent=4)
     file.close()
     return (list_exit)
@@ -89,16 +89,20 @@ def separator_name(URL):
             return (buf[2])
 
 
-def chek_list_key_json(URL):
-    with open('spisok.json', 'r') as file:      # открываем файл на чтение и достаём значение json файла
-        meta = json.load(file)
-    file.close()
+def valid_page_2(soup):         # блок для проверки сайта на наличие контейнера (тегов) с контентом в посте
 
-    meta_list = list(meta.keys())               # храним список всех ключей из json файла 
+    try:
+        page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
+        return (1)
 
-    for item in meta_list:
-        if (item == URL):
-            return (1)
-    
-    return (0)
-        
+    except Exception as _ex:
+        return (0)
+
+
+def valid_page_2_video(soup):
+    try:
+        page_2 = soup.find_all("iframe", class_="youtube-player")
+        return (1)
+
+    except Exception as _ex:
+        return (0)
