@@ -58,11 +58,47 @@ def pars_new_post(URL):
     return (list_exit)
 
 
+
 def pars_one_post(message_to_save):
     r = requests.get(message_to_save)       # модуль парсера для поиска отдного первого поста 
-    soup = b(r.text, 'html.parser')
+    
+    if(r.status_code == 200):
 
-    page_2 = soup.find("a", class_="link")
-    item_url = page_2.get("href")
-    print (item_url)
-    return (item_url)
+    # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается
+        soup = b(r.text, 'html.parser')
+
+        page_2 = soup.find("a", class_="link")
+        item_url = page_2.get("href")
+        print (item_url)
+        return (item_url)
+
+    else:
+        return ("404")
+
+
+
+
+def separator_name(URL):
+        buf = URL.split("/")
+        # print(len(buf))
+        if (len(buf) > 3):
+            # print(buf[4])
+            return (buf[4])
+        else:
+            # print(buf[2]) 
+            return (buf[2])
+
+
+def chek_list_key_json(URL):
+    with open('spisok.json', 'r') as file:      # открываем файл на чтение и достаём значение json файла
+        meta = json.load(file)
+    file.close()
+
+    meta_list = list(meta.keys())               # храним список всех ключей из json файла 
+
+    for item in meta_list:
+        if (item == URL):
+            return (1)
+    
+    return (0)
+        
