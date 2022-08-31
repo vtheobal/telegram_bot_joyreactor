@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as b
 import json
 import requests
- 
+
 def pars_new_post(URL, user_id):
 
     # парснг часть, которая пробегается по всем постам (на выходе есть список,  но чуть ниже не могу его обработать в for цикле)
