@@ -22,21 +22,18 @@ bot = telebot.TeleBot(API_KEY)
 
 @bot.message_handler(commands=['go'])
 def hello(message):
-    with open(str(message.from_user.id) + '.json',
-              'r') as file:  # открываем файл на чтение и достаём значение json файла
+    with open(str(message.from_user.id) + '.json', 'r') as file:  # открываем файл на чтение и достаём значение json файла
         meta = json.load(file)
     file.close()
 
     meta_list = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
 
     if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
-        bot.send_message(message.chat.id,
-                         "В вашем списке авторов, добавьте автора в список авторов, чтобы команда /go заработала")
+        bot.send_message(message.chat.id, "В вашем списке авторов, добавьте автора в список авторов, чтобы команда /go заработала")
         return 0
 
     for URL in meta_list:
-        list_exit = pars_new_post(URL,
-                                  str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
+        list_exit = pars_new_post(URL, str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
         if (list_exit):
             bot.send_message(message.chat.id, " 👉🏻 " + separator_name(URL) + " 👈🏻 ")
         for item in list_exit:
@@ -64,8 +61,9 @@ def hello(message):
 
             page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-            # for g in page_2:    #показыват все списки class_="link"
-            #     print(g)
+
+
+
 
             def pars_param_src(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
 
@@ -431,32 +429,17 @@ def pull2(message):  # сей конструкцией мы получаем т�
 
     page_2 = soup.find_all("a", class_="video_gif_source")
     print("---")
-    # print (page_2)
 
     list_gif = list()
 
     if len(page_2) != 0:
         for g in page_2:
-            # bot.send_message(message.chat.id, "https:"+g.get("href"))
-            list_gif.append("https:"+g.get("href"))
-
+            push = "https:"+g.get("href")
+            bot.send_message (message.chat.id, push)
 
     print(list_gif)
 
 
-    # r = list()
-    # for item in list_gif:
-    #     r.append(types.InputMediaDocument(item))
-    # bot.send_media_group(message.chat.id, r)
-
-    medias = [types.InputMediaDocument('https://img10.joyreactor.cc/pics/post/Sim0n404-artist-NieR-Automata-Nier-%28series%29-7574292.gif')]
-    bot.send_media_group(message.chat.id, medias)
-
-
-
-
-        
-    # print (list_baf)
 
 
 
