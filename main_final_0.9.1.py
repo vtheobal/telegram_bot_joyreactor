@@ -182,48 +182,55 @@ def add(message):
     bot.register_next_step_handler(sent, review)
 
 
-def review(message):  # сей конструкцией мы получаем текст из телеграмма, в нашем случае URL на автора
+# сей конструкцией мы получаем текст из телеграмма, в нашем случае URL на автора
+def review(message):
     message_to_save_add = message.text
     print(message_to_save_add)
 
-    if (
-            message_to_save_add == "https://joyreactor.cc/tag/" or message_to_save_add == "https://joyreactor.cc/user/"):  # исключение для пустого тега
+# исключение для пустого тега
+    if (message_to_save_add == "https://joyreactor.cc/tag/" or message_to_save_add == "https://joyreactor.cc/user/"):
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
         return 0
 
+# защита на подаваемый аргумен - отсеивает посты 
     elif (message_to_save_add.find("/post/") != -1):
         bot.send_message(message.chat.id, "вы передали пост, а не тег автора или автора")
         return 0
 
-    elif (message_to_save_add.find(
-            "reactor.cc/") != -1):  # ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока впринципе есть
+# ищем подстроку в строке и возвращаем индекс первого вхождения. 
+# Для нас достаточно определить что эта подстрока впринципе есть
+    elif (message_to_save_add.find("reactor.cc/") != -1):
 
-        one_post = pars_one_post(message_to_save_add)  # модуль парсера для поиска отдного первого поста
+# модуль парсера для поиска отдного первого поста
+        one_post = pars_one_post(message_to_save_add) 
         if (one_post == "404"):
             bot.send_message(message.chat.id, "такого автора/тега не существует")
             return 0
 
-        if (chek_list_key_json(message_to_save_add,
-                               str(message.from_user.id)) == 1):  # проверяет есть ли поданый телегой автор в СПИСКЕ авторов json
+# проверяет есть ли поданый автор в СПИСКЕ авторов в json файле   --- уточнить в чём защита
+        if (chek_list_key_json(message_to_save_add, str(message.from_user.id)) == 1):
             bot.send_message(message.chat.id, "такой автор уже есть в списке")
             return 0
 
-        json_now_post(message_to_save_add, one_post,
-                      str(message.from_user.id))  # модуль, добавдяющий в json нового автора (в качестве аргумента передаётся URL и первый пост автора)
+# модуль, добавдяющий в json нового автора (в качестве аргумента передаётся URL и первый пост автора)
+        json_now_post(message_to_save_add, one_post, str(message.from_user.id))
         bot.send_message(message.chat.id, "команда add выполнена")
 
-    else:  # в случае если URL пришёл биты - выводим ошибку - выходим
-        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
+# в случае если URL пришёл биты - выводим ошибку - выходим
+    else:
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора-тег")
         return 0
 
 
-@bot.message_handler(commands=['remove'])  # команда берёт текст, который мы отправляем после команды '/remove'
+# функция на удаление автора из списка отслеживаемых авторов 
+# команда берёт текст, который мы отправляем в ответ после команды '/remove'
+@bot.message_handler(commands=['remove'])
 def remove(message):
     sent = bot.reply_to(message, 'команда на удаление автора')
     bot.register_next_step_handler(sent, review1)
 
-
-def review1(message):  # сей конструкцией мы получаем текст из телеграмма, в нашем случае URL на автора
+# перекладываем текст нашего ответного сообщения в переменную
+def review1(message):
     message_to_save_remove = message.text
     print(message_to_save_remove)
 
