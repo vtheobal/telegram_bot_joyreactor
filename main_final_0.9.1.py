@@ -43,8 +43,11 @@ def hello(message):
 
             soup = b(r.text, 'html.parser')
 
-            if (valid_page_2_video(
-                    soup) == 1):  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнарируя весь остальной контент в посте
+            if (valid_page_2(soup) == 0):
+                bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
+                continue
+
+            if (valid_page_2_video(soup) == 1):  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнарируя весь остальной контент в посте
                 print("111")
                 page_2 = soup.find_all("iframe", class_="youtube-player")
                 r = list()
@@ -55,15 +58,24 @@ def hello(message):
                     bot.send_message(message.chat.id, '\n'.join(r))
                     # continue
 
-            if (valid_page_2(soup) == 0):
-                bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
+
+
+            if (valid_page_2_gif(soup) == 1):    
+                page_2 = soup.find_all("a", class_="video_gif_source")
+                print(page_2)
+
+
+                if len(page_2) != 0:
+                    for g in page_2:
+                        push = "https:"+g.get("href")
+                        bot.send_message (message.chat.id, push)
                 continue
 
+
+
+
+
             page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
-
-
-
-
 
             def pars_param_src(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
 
@@ -271,8 +283,7 @@ def pull(message):  # сей конструкцией мы получаем те
     message_to_save_pul = message.text
     print(message_to_save_pul)
 
-    if (message_to_save_pul.find(
-            "reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
+    if (message_to_save_pul.find("reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/post/...")
         return (0)
 
@@ -287,9 +298,13 @@ def pull(message):  # сей конструкцией мы получаем те
 
     soup = b(r.text, 'html.parser')
 
-    if (valid_page_2_video(
-            soup) == 1):  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except
-        # print ("111")
+
+# обработка ссылок на ютуб
+# обращение к функции из файла dop - функция чекает строчку ниже на читаемость
+# и оборачивыает в try except
+# вывод осужествляется через сообщения в чате
+
+    if (valid_page_2_video(soup) == 1):
         page_2 = soup.find_all("iframe", class_="youtube-player")
         r = list()
 
@@ -298,6 +313,28 @@ def pull(message):  # сей конструкцией мы получаем те
                 r.append(g.get("src"))
             bot.send_message(message.chat.id, '\n'.join(r))
             # return 0
+
+# обработка gif
+# обращение к функции из файла dop - функция чекает строчку ниже на читаемость
+# и оборачивыает в try except
+# вывод осужествляется через сообщения в чате
+
+    if (valid_page_2_gif(soup) == 1):
+        print("-1-")    
+        page_2 = soup.find_all("a", class_="video_gif_source")
+        print(page_2)
+
+
+        if len(page_2) != 0:
+            for g in page_2:
+                push = "https:"+g.get("href")
+                bot.send_message (message.chat.id, push)
+        print("-2-")
+        return 0
+
+
+
+
 
     #     bot.send_message(message.chat.id, '\n'.join(r))
 
@@ -422,22 +459,25 @@ def pull2(message):  # сей конструкцией мы получаем т�
     message_to_save_test = message.text
     print(message_to_save_test)
 
+    if (message_to_save_test.find("reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/post/...")
+        return (0)
+
     r = requests.get(message_to_save_test)
     # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается
 
     soup = b(r.text, 'html.parser')
 
-    page_2 = soup.find_all("a", class_="video_gif_source")
-    print("---")
+    # if (valid_page_2_gif(soup) == 1):    
+    #     page_2 = soup.find_all("a", class_="video_gif_source")
+    #     print(page_2)
 
-    list_gif = list()
 
-    if len(page_2) != 0:
-        for g in page_2:
-            push = "https:"+g.get("href")
-            bot.send_message (message.chat.id, push)
+    #     if len(page_2) != 0:
+    #         for g in page_2:
+    #             push = "https:"+g.get("href")
+    #             bot.send_message (message.chat.id, push)
 
-    print(list_gif)
 
 
 

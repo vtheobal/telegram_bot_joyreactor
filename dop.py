@@ -106,3 +106,14 @@ def valid_page_2_video(soup):
 
     except Exception as _ex:
         return (0)
+
+def valid_page_2_gif(soup):
+    try:
+        page_2 = soup.find_all("a", class_="video_gif_source")
+        if (len(page_2) > 0):
+            return (1)
+        else:
+            return (0)
+
+    except Exception as _ex:
+        return (0)
