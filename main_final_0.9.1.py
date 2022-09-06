@@ -187,14 +187,14 @@ def review(message):
     message_to_save_add = message.text
     print(message_to_save_add)
 
-# исключение для пустого тега
+# исключение для пустых тегов
     if (message_to_save_add == "https://joyreactor.cc/tag/" or message_to_save_add == "https://joyreactor.cc/user/"):
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
         return 0
 
 # защита на подаваемый аргумен - отсеивает посты 
     elif (message_to_save_add.find("/post/") != -1):
-        bot.send_message(message.chat.id, "вы передали пост, а не тег автора или автора")
+        bot.send_message(message.chat.id, "вы передали пост, а не автора или тег")
         return 0
 
 # ищем подстроку в строке и возвращаем индекс первого вхождения. 
@@ -234,20 +234,21 @@ def review1(message):
     message_to_save_remove = message.text
     print(message_to_save_remove)
 
-    if (
-            message_to_save_remove == "https://joyreactor.cc/tag/" or message_to_save_remove == "https://joyreactor.cc/user/"):
+# исключение для пустых тегов
+    if (message_to_save_remove == "https://joyreactor.cc/tag/" or message_to_save_remove == "https://joyreactor.cc/user/"):
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
         return 0
 
+# защита на подаваемый аргумен - отсеивает посты 
     elif (message_to_save_remove.find("/post/") != -1):
         bot.send_message(message.chat.id, "вы передали пост, а не тег автора или автора")
         return 0
 
-    elif (message_to_save_remove.find(
-            "reactor.cc/tag/") != -1):  # ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока впринципе есть
+# Ищем подстроку в строке и возвращаем индекс первого вхождения. 
+# Для нас достаточно определить что эта подстрока впринципе есть
+    elif (message_to_save_remove.find("reactor.cc/tag/") != -1):
 
-        if (chek_list_key_json(message_to_save_remove,
-                               str(message.from_user.id)) == 0):  # проверяет есть ли поданый телегой автор в СПИСКЕ авторов json
+        if (chek_list_key_json(message_to_save_remove, str(message.from_user.id)) == 0):  # проверяет есть ли поданый телегой автор в СПИСКЕ авторов json
             bot.send_message(message.chat.id, "такого автора нет в списке")
             return 0
 
