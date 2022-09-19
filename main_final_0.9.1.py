@@ -13,22 +13,26 @@ from telebot import types
 
 from dop import *
 from work_with_json import *
+from main_algorithm import *
 
 API_KEY = '5324085182:AAGOgFlXmC691d9ItR2vhy28l2nhaYYDJ48'
 bot = telebot.TeleBot(API_KEY)
 
 
 # Основная функция. Парсит значения из json и выдаёт посты
-
 @bot.message_handler(commands=['go'])
 def hello(message):
     with open(str(message.from_user.id) + '.json', 'r') as file:  # открываем файл на чтение и достаём значение json файла
         meta = json.load(file)
     file.close()
 
-    meta_list = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
+    # делаем из словаря список с ключами 
+    # в нашем случае это URL ссылки
+    meta_list = list(meta.keys())
 
-    if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
+    # проверка списка на пустоту. 
+    # если пустой - завершает команду
+    if len(meta) == 0:
         bot.send_message(message.chat.id, "В вашем списке авторов, добавьте автора в список авторов, чтобы команда /go заработала")
         return 0
 
@@ -47,12 +51,18 @@ def hello(message):
                 bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
                 continue
 
-            if (valid_page_2_video(soup) == 1):  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнарируя весь остальной контент в посте
-                print("111")
+
+            # обращение к функции из файла dop - функция чекает soup на читаемость 
+            # и оборачивыает в try except - 
+            # смотрит есть ли в блоке с медиа ссылки на ютуб 
+            # если есть, то выгружает, игнарируя весь остальной контент в посте
+
+            if (valid_page_2_video(soup) == 1): 
                 page_2 = soup.find_all("iframe", class_="youtube-player")
                 r = list()
 
                 if len(page_2) != 0:
+                    print("video found")
                     for g in page_2:
                         r.append(g.get("src"))
                     bot.send_message(message.chat.id, '\n'.join(r))
@@ -71,107 +81,10 @@ def hello(message):
                         bot.send_message (message.chat.id, push)
                 continue
 
-
-
-
-
             page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-            def pars_param_src(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
-
-                try:
-                    page_3 = buff.img.get("src")
-                    return (page_3)
-
-                except Exception as _ex:
-                    return (0)
-
-            def pars_param_href(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
-
-                try:
-                    page_3 = buff.a.get("href")
-                    return (page_3)
-
-                except Exception as _ex:
-                    return (0)
-
-            i = 0
-            list_href = list()
-            list_src = list()
-            print(len(page_2))
-            while i < (len(page_2)):
-
-                page_3 = pars_param_src(page_2[i])
-                page_4 = pars_param_href(page_2[i])
-                print("src = ", page_3)
-                print("href = ", page_4)
-                i += 1
-
-                if (page_3 != 0 and page_4 != 0 and page_4 != "javascript:"):
-                    print('1111')
-                    list_href.append('https:' + page_4)
-
-                elif (page_3 != 0 and page_4 == 0):
-                    list_src.append('https:' + page_3)
-
-                elif (page_3 != 0 and page_4 != 0 and page_4 == "javascript:"):
-                    list_src.append('https:' + page_3)
-
-            # print(list_href)
-            # print(list_src)
-
-            if (len(list_href) == 0):
-                print("список list_href пуст")
-
-            elif (
-                    len(list_href) > 10):  # данный блок собирает специальный список "r" по объёму подходящий для метода InputMediaPhoto и отправляет в чат
-                i = 1
-                r = list()
-                r.append(types.InputMediaDocument(list_href[0]))
-                while i < len(list_href):
-                    r.append(types.InputMediaDocument(list_href[i]))
-                    # print(i)
-                    print(types.InputMediaDocument(list_href[i]))
-                    if (i % 9) == 0:
-                        bot.send_media_group(message.chat.id, r)
-                        r = []
-                        print('девяточка')
-                    i += 1
-
-                bot.send_media_group(message.chat.id, r)
-
-            else:  # иначе если list_href меньше 10, то выполняется эта чать блока - без танцев с бубном
-                r = list()
-                for item in list_href:
-                    r.append(types.InputMediaDocument(item))
-
-                bot.send_media_group(message.chat.id, r)
-
-            if (len(list_src) == 0):
-                print("список list_src пуст")
-
-            elif (len(list_src) > 10):  # данный блок собирает специальный список "r" по объёму подходящий для метода InputMediaPhoto и отправляет в чат
-                i = 1
-                r = list()
-                r.append(types.InputMediaPhoto(list_src[0]))
-                while i < len(list_src):
-                    r.append(types.InputMediaPhoto(list_src[i]))
-                    # print(i)
-                    print(types.InputMediaPhoto(list_src[i]))
-                    if (i % 9) == 0:
-                        bot.send_media_group(message.chat.id, r)
-                        r = []
-                        print('девяточка')
-                    i += 1
-
-                bot.send_media_group(message.chat.id, r)
-
-            else:  # если list_src меньше 10, то выполняется эта часть блока - без танцев с бубном
-                r = list()
-                for item in list_src:
-                    r.append(types.InputMediaPhoto(item))
-
-                bot.send_media_group(message.chat.id, r)
+            # основной алгоритм по обработке пикчей
+            main_algorithm(soup, message)
 
     list_exit.clear()  # чистим список после выгрузки постов
 
@@ -263,16 +176,19 @@ def review1(message):
 
 @bot.message_handler(commands=['list'])
 def list_chek(message):
-    with open(str(message.from_user.id) + '.json',
-              'r') as file:  # открываем файл на чтение и достаём значение json файла
+
+    # открываем файл на чтение и достаём значение json файла
+    with open(str(message.from_user.id) + '.json','r') as file:
         meta = json.load(file)
     file.close()
 
-    if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
+    # проверка списка на пустоту. если пустой - завершает команду
+    if len(meta) == 0:
         bot.send_message(message.chat.id, "Ваш список пуст")
         return 0
 
-    list_chek = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
+    # делаем из словаря список с ключами, в нашем случае это URL ссылки
+    list_chek = list(meta.keys())
     print(list_chek)
 
     bot.send_message(message.chat.id, '\n'.join(list_chek))
@@ -286,17 +202,19 @@ def one_post(message):
     buf = bot.reply_to(message, 'в ответ скинь мне ссылку на пост')
     bot.register_next_step_handler(buf, pull)
 
-
-def pull(message):  # сей конструкцией мы получаем текст из телеграмма, в нашем случае URL на автора
+# перекладываем текст нашего ответного сообщения в переменную
+def pull(message):
     message_to_save_pul = message.text
     print(message_to_save_pul)
 
-    if (message_to_save_pul.find("reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
+    # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
+    if (message_to_save_pul.find("reactor.cc/post/") == -1):
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/post/...")
         return (0)
 
-    one_post = pars_one_post(
-        message_to_save_pul)  # защита от битых ссылок      # модуль парсера для поиска отдного первого поста
+    # защита от битых ссылок      
+    # модуль парсера для поиска отдного первого поста
+    one_post = pars_one_post(message_to_save_pul)
     if (one_post == "404"):
         bot.send_message(message.chat.id, "такого поста не существует")
         return (0)
@@ -328,167 +246,22 @@ def pull(message):  # сей конструкцией мы получаем те
 # вывод осужествляется через сообщения в чате
 
     if (valid_page_2_gif(soup) == 1):
-        print("-1-")    
         page_2 = soup.find_all("a", class_="video_gif_source")
         print(page_2)
-
 
         if len(page_2) != 0:
             for g in page_2:
                 push = "https:"+g.get("href")
                 bot.send_message (message.chat.id, push)
-        print("-2-")
         return 0
 
-
-
-
-
-    #     bot.send_message(message.chat.id, '\n'.join(r))
-
-    if (valid_page_2(soup) == 0):  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except
+    # чекает soup на читаемость и оборачивыает в try except
+    if (valid_page_2(soup) == 0):
         bot.send_message(message.chat.id, message_to_save_pul + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
         return 0
 
-    page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
-
-    # for g in page_2:    #показыват все списки class_="link"
-    #     print(g)
-
-    def pars_param_src(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
-
-        try:
-            page_3 = buff.img.get("src")
-            return (page_3)
-
-        except Exception as _ex:
-            return (0)
-
-    def pars_param_href(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
-
-        try:
-            page_3 = buff.a.get("href")
-            return (page_3)
-
-        except Exception as _ex:
-            return (0)
-
-    i = 0
-    list_href = list()
-    list_src = list()
-    print(len(page_2))
-    while i < (len(page_2)):
-
-        object_src = pars_param_src(page_2[i])
-        object_href = pars_param_href(page_2[i])
-        print("src = ", object_src)
-        print("href = ", object_href)
-        i += 1
-
-        if (object_src != 0 and object_href != 0 and object_href != "javascript:"):
-            print('111')
-            list_href.append('https:' + object_href)
-
-        elif (object_src != 0 and object_href == 0):
-            print('111')
-            list_src.append('https:' + object_src)
-
-        elif (object_src != 0 and object_href != 0 and object_href == "javascript:"):
-            print('111')
-            list_src.append('https:' + object_src)
-
-    print(list_href)
-    print(list_src)
-
-    if (len(list_href) == 0):
-        print("список list_href пуст")
-
-    elif (len(list_href) > 10):  # данный блок собирает специальный список "r" по объёму подходящий для метода InputMediaPhoto и отправляет в чат
-        i = 1
-        r = list()
-        r.append(types.InputMediaDocument(list_href[0]))
-        while i < len(list_href):
-            r.append(types.InputMediaDocument(list_href[i]))
-            # print(i)
-            print(types.InputMediaDocument(list_href[i]))
-            if (i % 9) == 0:
-                bot.send_media_group(message.chat.id, r)
-                r = []
-                print('девяточка')
-            i += 1
-
-        bot.send_media_group(message.chat.id, r)
-
-    else:  # если list_href меньше 10, то выполняется эта чать блока - без танцев с бубном
-        r = list()
-        for item in list_href:
-            r.append(types.InputMediaDocument(item))
-
-        bot.send_media_group(message.chat.id, r)
-
-    if (len(list_src) == 0):
-        print("список list_src пуст")
-
-    elif (len(list_src) > 10):  # данный блок собирает специальный список "r" по объёму подходящий для метода InputMediaPhoto и отправляет в чат
-        i = 1
-        r = list()
-        r.append(types.InputMediaPhoto(list_src[0]))
-        while i < len(list_src):
-            r.append(types.InputMediaPhoto(list_src[i]))
-            # print(i)
-            print(types.InputMediaPhoto(list_src[i]))
-            if (i % 9) == 0:
-                bot.send_media_group(message.chat.id, r)
-                r = []
-                print('девяточка')
-            i += 1
-
-        bot.send_media_group(message.chat.id, r)
-
-    else:  # если list_src меньше 10, то выполняется эта чать блока - без танцев с бубном
-        r = list()
-        for item in list_src:
-            r.append(types.InputMediaPhoto(item))
-
-        bot.send_media_group(message.chat.id, r)
-
-
-
-
-
-
-@bot.message_handler(commands=['test_href'])
-def test(message):
-    buf = bot.reply_to(message, 'в ответ скинь мне ссылку на пост с гифкой')
-    bot.register_next_step_handler(buf, pull2)
-
-
-def pull2(message):  # сей конструкцией мы получаем текст из телеграмма, в нашем случае URL на автора
-    message_to_save_test = message.text
-    print(message_to_save_test)
-
-    if (message_to_save_test.find("reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
-        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/post/...")
-        return (0)
-
-    r = requests.get(message_to_save_test)
-    # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается
-
-    soup = b(r.text, 'html.parser')
-
-    # if (valid_page_2_gif(soup) == 1):    
-    #     page_2 = soup.find_all("a", class_="video_gif_source")
-    #     print(page_2)
-
-
-    #     if len(page_2) != 0:
-    #         for g in page_2:
-    #             push = "https:"+g.get("href")
-    #             bot.send_message (message.chat.id, push)
-
-
-
-
+    # основной алгоритм по обработке пикчей
+    main_algorithm(soup, message)
 
 
 
@@ -516,3 +289,5 @@ bot.polling()
 # пост с 3 видео https://joyreactor.cc/post/5299310
 
 # пост , в котором есть и href, и src файл !!! https://joyreactor.cc/post/5015308
+
+# работа с асинхронкой https://telegra.ph/Zapusk-funkcij-v-bote-po-tajmeru-11-28

@@ -117,3 +117,22 @@ def valid_page_2_gif(soup):
 
     except Exception as _ex:
         return (0)
+
+
+def pars_param_src(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
+
+    try:
+        page_3 = buff.img.get("src")
+        return (page_3)
+
+    except Exception as _ex:
+        return (0)
+
+def pars_param_href(buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
+
+    try:
+        page_3 = buff.a.get("href")
+        return (page_3)
+
+    except Exception as _ex:
+        return (0)
