@@ -1,0 +1,5 @@
+    "https://joyreactor.cc/tag/Kittew": "/post/5459333",
+    "https://joyreactor.cc/tag/LeraPi": "/post/5152244",
+    "https://joyreactor.cc/tag/Mirco+Cabbia": "/post/5451499",
+    "https://anime.reactor.cc/user/Eicosane_1": "/post/5471211",
+    "https://joyreactor.cc/tag/BlushyPixy/new": "/post/5451794"
