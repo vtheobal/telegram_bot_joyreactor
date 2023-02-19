@@ -24,7 +24,7 @@ def pars_new_post(URL, user_id):
 
 
     # открытие файла в переменную мета и его вывод
-    with open(user_id+'.json', 'r') as file:  
+    with open('json_folder/'+user_id+'.json', 'r') as file:
         meta = json.load(file)
     file.close()
 
@@ -52,7 +52,7 @@ def pars_new_post(URL, user_id):
     print(meta)
 
     # переписываем последний пост в json файле
-    with open(user_id+'.json', 'w') as file:  
+    with open('json_folder/'+user_id+'.json', 'w') as file:
         json.dump(meta, file, indent=4)
     file.close()
     return list_exit

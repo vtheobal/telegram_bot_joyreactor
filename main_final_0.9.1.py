@@ -109,7 +109,7 @@ def review1(message):  # сей конструкцией мы получаем �
 
 @bot.message_handler(commands=['list'])
 def list_chek(message):
-    with open(str(message.from_user.id) + '.json',
+    with open('json_folder/'+str(message.from_user.id) + '.json',
               'r') as file:  # открываем файл на чтение и достаём значение json файла
         meta = json.load(file)
     file.close()
@@ -301,7 +301,7 @@ def test_href(message):
 def start_bot(message):
     list1 = {}
     print(type(list1))
-    with open(str(message.from_user.id)+'.json', 'w') as file:
+    with open('json_folder/'+str(message.from_user.id)+'.json', 'w') as file:
         json.dump(list1, file, indent=4)
         print("создан json файле пользователя")
     file.close()

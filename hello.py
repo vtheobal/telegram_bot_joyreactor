@@ -14,7 +14,7 @@ bot = telebot.TeleBot(API_KEY)
 def hello(message):
     while True:
         print("начало цикла")
-        with open(str(message.from_user.id) + '.json',
+        with open('json_folder/'+str(message.from_user.id) + '.json',
                   'r') as file:  # открываем файл на чтение и достаём значение json файла
             meta = json.load(file)
         file.close()
