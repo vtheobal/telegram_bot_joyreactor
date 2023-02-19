@@ -18,7 +18,7 @@ from dop import *
 from work_with_json import *
 from hello import *
 
-API_KEY = '5324085182:AAGOgFlXmC691d9ItR2vhy28l2nhaYYDJ48'
+API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
 bot = telebot.TeleBot(API_KEY)
 
 
@@ -288,8 +288,26 @@ def pull(message):  # сей конструкцией мы получаем те
         print("не прочиталось!")
 
 @bot.message_handler(commands=['test_href'])
+def test_href(message):
+
+    print(threading.active_count())
+    print(threading.enumerate())
+    print(threading())
 
 
+
+
+@bot.message_handler(commands=['start'])
+def start_bot(message):
+    list1 = {}
+    print(type(list1))
+    with open(str(message.from_user.id)+'.json', 'w') as file:
+        json.dump(list1, file, indent=4)
+        print("создан json файле пользователя")
+    file.close()
+
+    thr = threading.Thread(target=hello, args=(message,), name="osnova")
+    thr.start()
 
 
 @bot.message_handler(commands=['help'])  # конструкция для кнопок

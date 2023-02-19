@@ -8,7 +8,7 @@ from telebot import types
 from dop import *
 from work_with_json import *
 
-API_KEY = '5324085182:AAGOgFlXmC691d9ItR2vhy28l2nhaYYDJ48'
+API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
 bot = telebot.TeleBot(API_KEY)
 
 def hello(message):
@@ -21,9 +21,9 @@ def hello(message):
 
         meta_list = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
 
-        if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
-            bot.send_message(message.chat.id, "ваш список пуст, добавьте автора или тег, чтобы команда /go заработала")
-            return 0
+        # if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
+        #     bot.send_message(message.chat.id, "ваш список пуст, добавьте автора или тег, чтобы команда /go заработала")
+        #     return 0
 
         for URL in meta_list:
             list_exit = pars_new_post(URL,
@@ -50,7 +50,7 @@ def hello(message):
                         bot.send_message(message.chat.id, '\n'.join(r))
                         # continue
 
-                if valid_page_2(soup) == 0:  # разверни метод
+                if valid_page_2(soup) == 0:
                     bot.send_message(message.chat.id,
                                      "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
                     continue
@@ -66,10 +66,10 @@ def hello(message):
 
                     try:
                         page_3 = buff.img.get("src")
-                        return (page_3)
+                        return page_3
 
                     except Exception as _ex:
-                        return (0)
+                        return 0
 
                 def pars_param_href(
                         buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
@@ -165,5 +165,5 @@ def hello(message):
                 except Exception as _ex:
                     print("не прочиталось!")
 
-        list_exit.clear()  # чистим список после выгрузки постов
+            list_exit.clear()  # чистим список после выгрузки постов
         time.sleep(10)
