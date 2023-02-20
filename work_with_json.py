@@ -1,4 +1,4 @@
-import json
+from config import *
 
 def json_now_post(URL, post, user_id):
     with open('json_folder/'+user_id+'.json', 'r') as file:

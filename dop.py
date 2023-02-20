@@ -1,6 +1,4 @@
-from bs4 import BeautifulSoup as b
-import json
-import requests
+from config import *
 
 def pars_new_post(URL, user_id):
 

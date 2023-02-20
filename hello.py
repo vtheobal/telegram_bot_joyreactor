@@ -1,15 +1,9 @@
-import json
-import time
-
-import telebot
-
-from telebot import types
-
 from dop import *
 from work_with_json import *
+from config import *
 
-API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
-bot = telebot.TeleBot(API_KEY)
+# API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
+# bot = telebot.TeleBot(API_KEY)
 
 def hello(message):
     while True:
@@ -26,8 +20,7 @@ def hello(message):
         #     return 0
 
         for URL in meta_list:
-            list_exit = pars_new_post(URL,
-                                      str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
+            list_exit = pars_new_post(URL, str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
             if list_exit:
                 # bot.send_message(message.chat.id, " 👉🏻 " + separator_name(URL) + " 👈🏻 ")
                 bot.send_message(message.chat.id, URL)
