@@ -76,4 +76,4 @@ def hello(message):
                 push_telegramm(list_href, list_src, message)
 
             list_exit.clear()  # чистим список после выгрузки постов
-        time.sleep(10)
+        time.sleep(timer)

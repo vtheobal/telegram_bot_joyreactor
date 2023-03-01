@@ -9,3 +9,4 @@ from telebot import types
 
 API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
 bot = telebot.TeleBot(API_KEY)
+timer = 10
