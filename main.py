@@ -3,11 +3,6 @@ from work_with_json import *
 from hello import *
 from config import *
 
-# API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
-# bot = telebot.TeleBot(API_KEY)
-
-
-# Основная функция. Парсит значения из json и выдаёт посты
 
 @bot.message_handler(commands=['go'])
 def test(message):
