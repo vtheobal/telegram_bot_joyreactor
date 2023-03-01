@@ -1,5 +1,5 @@
 <h1 align="center">
-	:headphones: Telegram_bot_joyreactor
+	:headphones: Telegram_bot_Joyreactor
 </h1>
 
 
