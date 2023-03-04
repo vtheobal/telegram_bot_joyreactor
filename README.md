@@ -1,5 +1,5 @@
 <h1 align="center">
-	:iphone: Telegram_bot_Joyreactor
+	:mailbox: Telegram_bot_Joyreactor
 </h1>
 
 
