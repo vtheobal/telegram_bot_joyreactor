@@ -12,17 +12,18 @@ def test(message):
 
 @bot.message_handler(commands=['add'])  # команда берёт текст, который мы отправляем после команды '/add'
 def add(message):
-    sent = bot.reply_to(message, 'пришлите мне нового автора')
+    sent = bot.reply_to(message, 'пришлите мне нового автора, которого хотите отслеживать')
     bot.register_next_step_handler(sent, review)
 
 
-def review(message):  # сей конструкцией мы получаем текст из telegramm, в нашем случае URL на автора
+def review(message):  # сей конструкцией мы получаем текст из telegram, в нашем случае URL на автора
     message_to_save_add = message.text
     print(message_to_save_add)
 
     if (
             message_to_save_add == "https://joyreactor.cc/tag/" or message_to_save_add == "https://joyreactor.cc/user/"):  # исключение для пустого тега
-        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
+                                                                                " или https://joyreactor.cc/user/... ")
         return 0
 
     elif message_to_save_add.find("/post/") != -1:
@@ -30,7 +31,7 @@ def review(message):  # сей конструкцией мы получаем т
         return 0
 
     elif (message_to_save_add.find(
-            "reactor.cc/") != -1):  # ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока впринципе есть
+            "reactor.cc/") != -1):  # Ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока впринципе есть
 
         one_post = pars_one_post(message_to_save_add)  # модуль парсера для поиска одного первого поста
         if (one_post == "404"):
@@ -44,16 +45,17 @@ def review(message):  # сей конструкцией мы получаем т
 
         json_now_post(message_to_save_add, one_post,
                       str(message.from_user.id))  # модуль, добавляющий в json нового автора (в качестве аргумента передаётся URL и первый пост автора)
-        bot.send_message(message.chat.id, "команда add выполнена")
+        bot.send_message(message.chat.id, "автор/тег добавлен")
 
     else:  # в случае если URL пришёл биты - выводим ошибку - выходим
-        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
+                         " или https://joyreactor.cc/user/... ")
         return 0
 
 
 @bot.message_handler(commands=['remove'])  # команда берёт текст, который мы отправляем после команды '/remove'
 def remove(message):
-    sent = bot.reply_to(message, 'какого автора надо удалить?')
+    sent = bot.reply_to(message, 'какого автора/тег надо удалить?')
     bot.register_next_step_handler(sent, review1)
 
 
@@ -63,7 +65,8 @@ def review1(message):  # сей конструкцией мы получаем �
 
     if (
             message_to_save_remove == "https://joyreactor.cc/tag/" or message_to_save_remove == "https://joyreactor.cc/user/"):
-        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
+                         " или https://joyreactor.cc/user/... ")
         return 0
 
     elif message_to_save_remove.find("/post/") != -1:
@@ -80,10 +83,11 @@ def review1(message):  # сей конструкцией мы получаем �
 
         json_remove_avtor(message_to_save_remove,
                           str(message.from_user.id))  # модуль, удаляющий в json автора (в качестве аргумента передаётся URL)
-        bot.send_message(message.chat.id, "команда remove выполнена")
+        bot.send_message(message.chat.id, "автор/тег удалён из списка")
 
     else:
-        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/ник_автора")
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
+                         " или https://joyreactor.cc/user/... ")
         return 0
 
 
@@ -94,7 +98,7 @@ def list_chek(message):
         meta = json.load(file)
     file.close()
 
-    if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
+    if len(meta) == 0:  # Проверка списка на пустоту. Если пустой - завершает команду
         bot.send_message(message.chat.id, "Ваш список пуст")
         return 0
 
@@ -113,7 +117,7 @@ def one_post(message):
     bot.register_next_step_handler(buf, pull)
 
 
-def pull(message):  # сей конструкцией мы получаем текст из telegramm, в нашем случае URL на автора
+def pull(message):  # сей конструкцией мы получаем текст из telegram, в нашем случае URL на автора
     message_to_save_pul = message.text
     print(message_to_save_pul)
 
@@ -187,7 +191,7 @@ def random_post(message):
     bot.register_next_step_handler(buf, random_post_next)
 
 
-def random_post_next(message):  # сей конструкцией мы получаем текст из телеграмма, в нашем случае URL на автора
+def random_post_next(message):  # сей конструкцией мы получаем текст из telegram, в нашем случае URL на автора
     message_to_save_pul = message.text
     print(message_to_save_pul)
 
@@ -196,7 +200,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
                                                                                 " или https://joyreactor.cc/user/... ")
         return 0
 
-    one_post = pars_one_post(message_to_save_pul)  # защита от битых ссылок. модуль для поиска одного первого поста
+    one_post = pars_one_post(message_to_save_pul)  # Защита от битых ссылок. Модуль для поиска одного первого поста
     if one_post == "404":
         bot.send_message(message.chat.id, "такого поста не существует")
         return 0
@@ -313,7 +317,7 @@ def knopka(message):
     bot.send_message(message.chat.id, "help - разворот кнопок", reply_markup=markup)
 
 
-@bot.message_handler()  # обработчик рандомных команд
+@bot.message_handler()  # обработчик случайных команд
 def error(message):
     bot.send_message(message.chat.id, "введите /help чтобы увидеть список команд")
 
