@@ -31,7 +31,7 @@ def review(message):  # сей конструкцией мы получаем т
         return 0
 
     elif (message_to_save_add.find(
-            "reactor.cc/") != -1):  # Ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока впринципе есть
+            "reactor.cc/") != -1):  # Ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока в принципе есть
 
         one_post = pars_one_post(message_to_save_add)  # модуль парсера для поиска одного первого поста
         if (one_post == "404"):
@@ -59,7 +59,7 @@ def remove(message):
     bot.register_next_step_handler(sent, review1)
 
 
-def review1(message):  # сей конструкцией мы получаем текст из telegramm, в нашем случае URL на автора
+def review1(message):  # сей конструкцией мы получаем текст из telegram, в нашем случае URL на автора
     message_to_save_remove = message.text
     print(message_to_save_remove)
 
@@ -122,7 +122,7 @@ def pull(message):  # сей конструкцией мы получаем те
     print(message_to_save_pul)
 
     if (message_to_save_pul.find(
-            "reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
+            "reactor.cc/post/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соответствует, то выдаёт ошибку
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/post/...")
         return 0
 
@@ -135,7 +135,7 @@ def pull(message):  # сей конструкцией мы получаем те
     r = requests.get(message_to_save_pul)
     soup = b(r.text, 'html.parser')
 
-    if valid_page_2_video(soup) == 1:  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except
+    if valid_page_2_video(soup) == 1:  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
         page_2 = soup.find_all("iframe", class_="youtube-player")
         r = list()
 
@@ -147,7 +147,7 @@ def pull(message):  # сей конструкцией мы получаем те
 
     #     bot.send_message(message.chat.id, '\n'.join(r))
 
-    if valid_page_2(soup) == 0:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except
+    if valid_page_2(soup) == 0:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
         bot.send_message(message.chat.id,
                          message_to_save_pul + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
         return 0
@@ -195,7 +195,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
     message_to_save_pul = message.text
     print(message_to_save_pul)
 
-    if (message_to_save_pul.find("reactor.cc/tag/") == -1) and (message_to_save_pul.find("reactor.cc/user/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соотвектствует, то выдаёт ошибку
+    if (message_to_save_pul.find("reactor.cc/tag/") == -1) and (message_to_save_pul.find("reactor.cc/user/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соответствует, то выдаёт ошибку
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
                                                                                 " или https://joyreactor.cc/user/... ")
         return 0
@@ -217,12 +217,9 @@ def random_post_next(message):  # сей конструкцией мы полу�
     random_tabs_utter = message_to_save_pul + "/" + str(random_tabs)
     print(random_tabs_utter)
 
-    # парсинг часть, которая пробегается по всем постам (на выходе есть список, но чуть ниже не могу его обработать в for цикле)
     r = requests.get(random_tabs_utter)
 
-
     soup = b(r.text, 'html.parser')
-
     page_2 = soup.find_all("a", class_="link")
     # for g in page_2:    #показывает все списки class_="link"
     #     print(g)
@@ -242,7 +239,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
     soup = b(r.text, 'html.parser')
 
     if valid_page_2_video(
-            soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнарируя весь остальной контент в посте
+            soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнорируя весь остальной контент в посте
         print("111")
         page_2 = soup.find_all("iframe", class_="youtube-player")
         r = list()
@@ -257,9 +254,8 @@ def random_post_next(message):  # сей конструкцией мы полу�
         bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
         return 0
 
-
+    # собирает весь контент в посте и сортирует на обработку
     page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
-
 
     i = 0
     list_href = list()
@@ -285,10 +281,124 @@ def random_post_next(message):  # сей конструкцией мы полу�
             print('Метод сортировки 3')
             list_src.append('https:' + page_3)
 
+    # оставить! проверка модуля сортировки контента
     # print(list_href)
     # print(list_src)
 
+    # модуль отправляет контент в telegram
     push_telegramm(list_href, list_src, message)
+
+
+
+
+
+@bot.message_handler(commands=['random_post_10'])
+def random_post(message):
+    buf = bot.reply_to(message, 'кинь ссылку автора чтобы я вернул тебе рандомный пост')
+    bot.register_next_step_handler(buf, random_post_next_10)
+
+
+def random_post_next_10(message):  # сей конструкцией мы получаем текст из telegram, в нашем случае URL на автора
+    message_to_save_pul = message.text
+    print(message_to_save_pul)
+
+    if (message_to_save_pul.find("reactor.cc/tag/") == -1) and (message_to_save_pul.find("reactor.cc/user/") == -1):  # защита входящих ссылок на соответствие шаблону ниже, если не соответствует, то выдаёт ошибку
+        bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
+                                                                                " или https://joyreactor.cc/user/... ")
+        return 0
+
+    one_post = pars_one_post(message_to_save_pul)  # Защита от битых ссылок. Модуль для поиска одного первого поста
+    if one_post == "404":
+        bot.send_message(message.chat.id, "такого поста не существует")
+        return 0
+
+    r = requests.get(message_to_save_pul)
+    soup = b(r.text, 'html.parser')
+
+    # ищет максимальное количество вкладок автора
+    page_5 = soup.find("div", class_="pagination_expanded").find("span", class_="current")
+
+    max_tabs = int(page_5.text)
+    print("max количество вкладок: ", max_tabs)
+
+    for _ in range(10):
+
+        # берём случайный номер страницы с постами
+        random_tabs = random.randint(1, int(max_tabs))
+        random_tabs_utter = message_to_save_pul + "/" + str(random_tabs)
+        print(random_tabs_utter)
+
+        r = requests.get(random_tabs_utter)
+
+        # собирает все ссылки на посты в приделах одной странице
+        soup = b(r.text, 'html.parser')
+        page_2 = soup.find_all("a", class_="link")
+        # for g in page_2:    #показывает все списки class_="link"
+        #     print(g)
+
+        list_post = []
+        for item in page_2:
+            item_url = item.get("href")
+            list_post.append(item_url)
+        print(list_post)
+
+        list_post_random = random.choice(list_post)
+
+        print("https://joyreactor.cc" + list_post_random)
+        r = requests.get("https://joyreactor.cc" + list_post_random)
+        # # print(r.status_code)     # статус обработки (200) - всё работает, сайт читается
+
+        soup = b(r.text, 'html.parser')
+
+        if valid_page_2_video(
+                soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнорируя весь остальной контент в посте
+            print("111")
+            page_2 = soup.find_all("iframe", class_="youtube-player")
+            r = list()
+
+            if len(page_2) != 0:
+                for g in page_2:
+                    r.append(g.get("src"))
+                bot.send_message(message.chat.id, '\n'.join(r))
+                # continue
+
+        if valid_page_2(soup) == 0:
+            bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
+            return 0
+
+        # собирает весь контент в посте и сортирует на обработку
+        page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
+
+        i = 0
+        list_href = list()
+        list_src = list()
+        print(len(page_2))
+        while i < (len(page_2)):
+
+            page_3 = pars_param_src(page_2[i])
+            page_4 = pars_param_href(page_2[i])
+            print("src = ", page_3)
+            print("href = ", page_4)
+            i += 1
+
+            if page_3 != 0 and page_4 != 0 and page_4 != "javascript:":
+                print('Метод сортировки 1')
+                list_href.append('https:' + page_4)
+
+            elif page_3 != 0 and page_4 == 0:
+                print('Метод сортировки 2')
+                list_src.append('https:' + page_3)
+
+            elif page_3 != 0 and page_4 != 0 and page_4 == "javascript:":
+                print('Метод сортировки 3')
+                list_src.append('https:' + page_3)
+
+        # оставить! проверка модуля сортировки контента
+        # print(list_href)
+        # print(list_src)
+
+        # модуль отправляет контент в telegram
+        push_telegramm(list_href, list_src, message)
 
 
 @bot.message_handler(commands=['start'])
@@ -313,7 +423,8 @@ def knopka(message):
     list = types.KeyboardButton('/list')  # добавляет кнопку с командой ('/list')
     one_post = types.KeyboardButton('/one_post')
     random_post = types.KeyboardButton('/random_post')
-    markup.add(add, remove, go, list, one_post, random_post)  # в толбар добавялет объектами кнопок
+    random_post_10 = types.KeyboardButton('/random_post_10')
+    markup.add(add, remove, go, list, one_post, random_post, random_post_10)  # в толбар добавляет объектами кнопок
     bot.send_message(message.chat.id, "help - разворот кнопок", reply_markup=markup)
 
 
@@ -322,4 +433,3 @@ def error(message):
     bot.send_message(message.chat.id, "введите /help чтобы увидеть список команд")
 
 bot.polling()
-

@@ -1,4 +1,4 @@
 __pycache__
 json.txt
-/json_folder/*.json
+*.json
 /.idea
