@@ -3,11 +3,21 @@ from work_with_json import *
 from hello import *
 from config import *
 
+flag_go = 0
+
 
 @bot.message_handler(commands=['go'])
 def test(message):
-    thr = threading.Thread(target=hello, args=(message,), name="osnova")
-    thr.start()
+    global flag_go
+
+    if flag_go == 0:
+        globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
+        globals()[message.from_user.id].start()
+        flag_go = 1
+        bot.send_message(message.chat.id, "Включаю поток")
+    else:
+        print(f"поток {message.from_user.id} запущен")
+        bot.send_message(message.chat.id, "Поток уже запущен!")
 
 
 @bot.message_handler(commands=['add'])  # команда берёт текст, который мы отправляем после команды '/add'
@@ -289,9 +299,6 @@ def random_post_next(message):  # сей конструкцией мы полу�
     push_telegramm(list_href, list_src, message)
 
 
-
-
-
 @bot.message_handler(commands=['random_post_10'])
 def random_post(message):
     buf = bot.reply_to(message, 'кинь ссылку автора чтобы я вернул тебе рандомный пост')
@@ -410,8 +417,14 @@ def start_bot(message):
         print("создан json файле пользователя")
     file.close()
 
-    thr = threading.Thread(target=hello, args=(message,), name="osnova")
-    thr.start()
+    global flag_go
+
+    if flag_go == 0:
+        globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
+        globals()[message.from_user.id].start()
+        flag_go = 1
+    else:
+        print(f"поток {message.from_user.id} запущен")
 
 
 @bot.message_handler(commands=['help'])  # конструкция для кнопок
@@ -432,4 +445,10 @@ def knopka(message):
 def error(message):
     bot.send_message(message.chat.id, "введите /help чтобы увидеть список команд")
 
+
+# if __name__ == '__main__':
+#     print("ee")
+
 bot.polling()
+
+
