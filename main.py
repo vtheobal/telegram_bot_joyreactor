@@ -8,16 +8,38 @@ flag_go = 0
 
 @bot.message_handler(commands=['go'])
 def test(message):
-    global flag_go
+    # global flag_go
 
-    if flag_go == 0:
-        globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
-        globals()[message.from_user.id].start()
-        flag_go = 1
-        bot.send_message(message.chat.id, "Включаю поток")
+    if os.path.isfile('json_folder/' + str(message.chat.id) + '.json'):
+        with open('json_folder/user_id.json', 'r') as file:
+            meta = json.load(file)
+        file.close()
+        print(meta)
+
+        if meta[str(message.chat.id)] == 0:
+            globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
+            globals()[message.from_user.id].start()
+            meta[str(message.chat.id)] = 1
+            with open('json_folder/user_id.json', 'w') as file:
+                json.dump(meta, file, indent=4)
+            file.close()
+            bot.send_message(message.chat.id, "Включаю поток")
+        else:
+            print(f"поток {message.from_user.id} запущен")
+            bot.send_message(message.chat.id, "Поток уже запущен!")
+
     else:
-        print(f"поток {message.from_user.id} запущен")
-        bot.send_message(message.chat.id, "Поток уже запущен!")
+        print("json файл пользователя не найден")
+
+
+    # if flag_go == 0:
+    #     globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
+    #     globals()[message.from_user.id].start()
+    #     flag_go = 1
+    #     bot.send_message(message.chat.id, "Включаю поток")
+    # else:
+    #     print(f"поток {message.from_user.id} запущен")
+    #     bot.send_message(message.chat.id, "Поток уже запущен!")
 
 
 @bot.message_handler(commands=['add'])  # команда берёт текст, который мы отправляем после команды '/add'
@@ -417,14 +439,39 @@ def start_bot(message):
         print("создан json файле пользователя")
     file.close()
 
-    global flag_go
 
-    if flag_go == 0:
-        globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
-        globals()[message.from_user.id].start()
-        flag_go = 1
+    if os.path.isfile('json_folder/' + str(message.chat.id) + '.json'):
+        with open('json_folder/user_id.json', 'r') as file:
+            meta = json.load(file)
+        file.close()
+        print(meta)
+
+        if meta.get(str(message.chat.id)):
+            print("ключ в виде id есть в списке")
+        else:
+            globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
+            globals()[message.from_user.id].start()
+            meta[str(message.chat.id)] = 1
+            with open('json_folder/user_id.json', 'w') as file:
+                json.dump(meta, file, indent=4)
+            file.close()
+            bot.send_message(message.chat.id, "Включаю поток")
     else:
-        print(f"поток {message.from_user.id} запущен")
+        print("json файл пользователя не найден")
+
+
+
+
+
+
+    # global flag_go
+    #
+    # if flag_go == 0:
+    #     globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
+    #     globals()[message.from_user.id].start()
+    #     flag_go = 1
+    # else:
+    #     print(f"поток {message.from_user.id} запущен")
 
 
 @bot.message_handler(commands=['help'])  # конструкция для кнопок
@@ -446,8 +493,20 @@ def error(message):
     bot.send_message(message.chat.id, "введите /help чтобы увидеть список команд")
 
 
-# if __name__ == '__main__':
-#     print("ee")
+if __name__ == '__main__':
+    with open('json_folder/user_id.json', 'r') as file:
+        meta = json.load(file)
+    file.close()
+    print(meta)
+
+    for _ in meta:
+        meta[_] = 0
+    print(meta)
+
+    with open('json_folder/user_id.json', 'w') as file:
+        json.dump(meta, file, indent=4)
+    file.close()
+
 
 bot.polling()
 
