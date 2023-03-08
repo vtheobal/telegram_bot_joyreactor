@@ -8,7 +8,7 @@ import random
 from telebot import types
 import os.path
 
-API_KEY = '5776307867:AAHKJoOA-J8wYFetuLwX9vWsc9mIjl8hPkE'
+API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
 bot = telebot.TeleBot(API_KEY)
 
 # таймер задержки для потока (hello.py), что парcит авторов/теги из библиотеки
