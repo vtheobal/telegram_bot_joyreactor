@@ -12,4 +12,4 @@ API_KEY = '6027340474:AAG4dJ79uYBwtXHGdmKlSSKLAYC8p1Qe9oo'
 bot = telebot.TeleBot(API_KEY)
 
 # таймер задержки для потока (hello.py), что парcит авторов/теги из библиотеки
-timer = 10
+timer = 900

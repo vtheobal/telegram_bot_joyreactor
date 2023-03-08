@@ -5,7 +5,7 @@ from config import *
 
 def hello(message):
     while True:
-        print("начало цикла")
+        print(message.from_user.id, "начало цикла")
         with open('json_folder/'+str(message.from_user.id) + '.json',
                   'r') as file:  # открываем файл на чтение и достаём значение json файла
             meta = json.load(file)
