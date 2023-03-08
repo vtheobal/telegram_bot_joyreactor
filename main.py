@@ -32,16 +32,6 @@ def test(message):
         print("json файл пользователя не найден")
 
 
-    # if flag_go == 0:
-    #     globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
-    #     globals()[message.from_user.id].start()
-    #     flag_go = 1
-    #     bot.send_message(message.chat.id, "Включаю поток")
-    # else:
-    #     print(f"поток {message.from_user.id} запущен")
-    #     bot.send_message(message.chat.id, "Поток уже запущен!")
-
-
 @bot.message_handler(commands=['add'])  # команда берёт текст, который мы отправляем после команды '/add'
 def add(message):
     sent = bot.reply_to(message, 'пришлите мне нового автора, которого хотите отслеживать')

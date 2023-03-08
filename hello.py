@@ -13,10 +13,6 @@ def hello(message):
 
         meta_list = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
 
-        # if len(meta) == 0:  # проверка списка на пустоту. если пустой - завершает команду
-        #     bot.send_message(message.chat.id, "ваш список пуст, добавьте автора или тег, чтобы команда /go заработала")
-        #     return 0
-
         for URL in meta_list:
             list_exit = pars_new_post(URL, str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
             if list_exit:
@@ -30,7 +26,7 @@ def hello(message):
 
                 if valid_page_2_video(
                         soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнарируя весь остальной контент в посте
-                    print("111")
+                    print("youtube-link")
                     page_2 = soup.find_all("iframe", class_="youtube-player")
                     r = list()
 
@@ -47,7 +43,6 @@ def hello(message):
 
                 page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div",
                                                                                                          class_="image")
-
                 i = 0
                 list_href = list()
                 list_src = list()
@@ -61,13 +56,15 @@ def hello(message):
                     i += 1
 
                     if page_3 != 0 and page_4 != 0 and page_4 != "javascript:":
-                        print('1111')
+                        print('Метод сортировки 1')
                         list_href.append('https:' + page_4)
 
                     elif page_3 != 0 and page_4 == 0:
+                        print('Метод сортировки 2')
                         list_src.append('https:' + page_3)
 
-                    elif (page_3 != 0 and page_4 != 0 and page_4 == "javascript:"):
+                    elif page_3 != 0 and page_4 != 0 and page_4 == "javascript:":
+                        print('Метод сортировки 3')
                         list_src.append('https:' + page_3)
 
                 # print(list_href)
