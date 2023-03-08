@@ -460,20 +460,6 @@ def start_bot(message):
         print("json файл пользователя не найден")
 
 
-
-
-
-
-    # global flag_go
-    #
-    # if flag_go == 0:
-    #     globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
-    #     globals()[message.from_user.id].start()
-    #     flag_go = 1
-    # else:
-    #     print(f"поток {message.from_user.id} запущен")
-
-
 @bot.message_handler(commands=['help'])  # конструкция для кнопок
 def knopka(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -509,5 +495,3 @@ if __name__ == '__main__':
 
 
 bot.polling()
-
-

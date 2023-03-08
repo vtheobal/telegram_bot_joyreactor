@@ -141,14 +141,14 @@ def push_telegramm(list_href, list_src, message):
         if len(list_src) == 0:
             print("список list_src пуст")
 
-        elif len(list_src) > 10:  # данный блок собирает специальный список "r" по объёму подходящий для метода InputMediaPhoto и отправляет в чат
+        elif len(list_src) > 10:  # собирает список ссылок "r" по объёму подходящий для метода InputMediaPhoto и отправляет в чат
             i = 1
             r = list()
-            r.append(types.InputMediaPhoto(list_src[0]))
+            r.append(types.InputMediaDocument(list_src[0]))
             while i < len(list_src):
-                r.append(types.InputMediaPhoto(list_src[i]))
+                r.append(types.InputMediaDocument(list_src[i]))
                 # print(i)
-                print(types.InputMediaPhoto(list_src[i]))
+                print(types.InputMediaDocument(list_src[i]))
                 if (i % 9) == 0:
                     bot.send_media_group(message.chat.id, r)
                     r = []
@@ -157,10 +157,10 @@ def push_telegramm(list_href, list_src, message):
 
             bot.send_media_group(message.chat.id, r)
 
-        else:  # если list_src меньше 10, то выполняется эта чать блока - без танцев с бубном
+        else:  # если list_src меньше 10, то выполняется эта сборка ссылок - без танцев с бубном
             r = list()
             for item in list_src:
-                r.append(types.InputMediaPhoto(item))
+                r.append(types.InputMediaDocument(item))
 
             bot.send_media_group(message.chat.id, r)
 
