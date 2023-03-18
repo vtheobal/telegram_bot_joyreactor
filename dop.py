@@ -48,8 +48,8 @@ def pars_new_post(URL, user_id):
     return list_exit
 
 
-def pars_one_post(message_to_save):
-    r = requests.get(message_to_save)       # модуль парсера для поиска отдного первого поста 
+def pars_one_post(r):
+    # r = requests.get(message_to_save)       # модуль парсера для поиска отдного первого поста
     
     if r.status_code == 200:
     # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается

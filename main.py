@@ -55,8 +55,9 @@ def review(message):  # сей конструкцией мы получаем т
     elif (message_to_save_add.find(
             "reactor.cc/") != -1):  # Ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока в принципе есть
 
-        one_post = pars_one_post(message_to_save_add)  # модуль парсера для поиска одного первого поста
-        if (one_post == "404"):
+        r = requests.get(message_to_save_add)
+        one_post = pars_one_post(r)  # модуль парсера для поиска одного первого поста
+        if one_post == "404":
             bot.send_message(message.chat.id, "такого автора/тега не существует")
             return 0
 
@@ -148,13 +149,22 @@ def pull(message):  # сей конструкцией мы получаем те
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/post/...")
         return 0
 
-    one_post = pars_one_post(
-        message_to_save_pul)  # защита от битых ссылок модуль для поиска одного первого поста
+    try:
+        r = requests.get(message_to_save_pul)
+        print("try")
+        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+            print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+            return
+    except requests.exceptions.RequestException:
+        print("глобальная ошибка requests")
+        time.sleep(120)
+        return
+
+    one_post = pars_one_post(r)  # защита от битых ссылок модуль для поиска одного первого поста
     if one_post == "404":
         bot.send_message(message.chat.id, "такого поста не существует")
         return 0
 
-    r = requests.get(message_to_save_pul)
     soup = b(r.text, 'html.parser')
 
     if valid_page_2_video(soup) == 1:  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
@@ -222,12 +232,25 @@ def random_post_next(message):  # сей конструкцией мы полу�
                                                                                 " или https://joyreactor.cc/user/... ")
         return 0
 
-    one_post = pars_one_post(message_to_save_pul)  # Защита от битых ссылок. Модуль для поиска одного первого поста
+    try:
+        r = requests.get(message_to_save_pul)
+        print("try")
+        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+            print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+            return
+    except requests.exceptions.RequestException:
+        print("глобальная ошибка requests")
+        time.sleep(120)
+        return
+
+    one_post = pars_one_post(r)  # защита от битых ссылок модуль для поиска одного первого поста
     if one_post == "404":
         bot.send_message(message.chat.id, "такого поста не существует")
         return 0
 
-    r = requests.get(message_to_save_pul)
+
+
+
     soup = b(r.text, 'html.parser')
 
     page_5 = soup.find("div", class_="pagination_expanded").find("span", class_="current")
@@ -326,12 +349,21 @@ def random_post_next_10(message):  # сей конструкцией мы пол
                                                                                 " или https://joyreactor.cc/user/... ")
         return 0
 
-    one_post = pars_one_post(message_to_save_pul)  # Защита от битых ссылок. Модуль для поиска одного первого поста
+    try:
+        r = requests.get(message_to_save_pul)
+        print("try")
+        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+            print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+            return
+    except requests.exceptions.RequestException:
+        print("глобальная ошибка requests")
+        time.sleep(120)
+        return
+
+    one_post = pars_one_post(r)  # защита от битых ссылок модуль для поиска одного первого поста
     if one_post == "404":
         bot.send_message(message.chat.id, "такого поста не существует")
         return 0
-
-    r = requests.get(message_to_save_pul)
     soup = b(r.text, 'html.parser')
 
     # ищет максимальное количество вкладок автора

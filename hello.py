@@ -1,3 +1,5 @@
+import time
+
 from dop import *
 from work_with_json import *
 from config import *
@@ -19,8 +21,15 @@ def hello(message):
                 bot.send_message(message.chat.id, URL)
             for item in list_exit:
 
-                r = requests.get("https://joyreactor.cc" + item)
-                # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается
+                try:
+                    r = requests.get("https://joyreactor.cc" + item)
+                    if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
+                        print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+                        continue
+                except requests.exceptions.RequestException:
+                    print("глобальная ошибка requests")
+                    time.sleep(120)
+                    continue
 
                 soup = b(r.text, 'html.parser')
 
