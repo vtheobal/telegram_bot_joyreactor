@@ -3,7 +3,19 @@ from config import *
 def pars_new_post(URL, user_id):
 
     # парснг часть, которая пробегается по всем постам (на выходе есть список,  но чуть ниже не могу его обработать в for цикле)
-    r = requests.get(URL)
+    try:
+        session = get_session()
+        r = session.get(URL)
+        print("try")
+        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+            print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+            return
+    except requests.exceptions.RequestException:
+        print("глобальная ошибка requests")
+        time.sleep(120)
+        return
+
+    # r = requests.get(URL)
     # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается
 
     soup = b(r.text, 'html.parser')
@@ -158,3 +170,17 @@ def push_telegramm(list_href, list_src, message):
 
     except Exception as _ex:
         print("не прочиталось!")
+
+def get_session():
+    session = requests.Session()
+    session.headers = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
+        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language':'ru,en-US;q=0.5',
+        'Accept-Encoding':'gzip, deflate, br',
+        'DNT':'1',
+        'Connection':'keep-alive',
+        'Upgrade-Insecure-Requests':'1',
+        'Pragma':'no-cache',
+        'Cache-Control':'no-cache'}
+    return cfscrape.create_scraper(sess=session)

@@ -22,7 +22,9 @@ def hello(message):
             for item in list_exit:
 
                 try:
-                    r = requests.get("https://joyreactor.cc" + item)
+                    session = get_session()
+                    r = session.get("https://joyreactor.cc" + item)
+                    # r = requests.get("https://joyreactor.cc" + item)
                     if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
                         print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                         continue

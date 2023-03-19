@@ -55,7 +55,18 @@ def review(message):  # сей конструкцией мы получаем т
     elif (message_to_save_add.find(
             "reactor.cc/") != -1):  # Ищем подстроку в строке и возвращаем индекс первого вхождения. для нас достаточно определить что эта подстрока в принципе есть
 
-        r = requests.get(message_to_save_add)
+        try:
+            session = get_session()
+            r = session.get(message_to_save_add)
+            if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
+                print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+                return
+        except requests.exceptions.RequestException:
+            print("глобальная ошибка requests")
+            time.sleep(120)
+            return
+        # r = requests.get(message_to_save_add)
+
         one_post = pars_one_post(r)  # модуль парсера для поиска одного первого поста
         if one_post == "404":
             bot.send_message(message.chat.id, "такого автора/тега не существует")
@@ -150,7 +161,8 @@ def pull(message):  # сей конструкцией мы получаем те
         return 0
 
     try:
-        r = requests.get(message_to_save_pul)
+        session = get_session()
+        r = session.get(message_to_save_pul)
         print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
@@ -233,7 +245,8 @@ def random_post_next(message):  # сей конструкцией мы полу�
         return 0
 
     try:
-        r = requests.get(message_to_save_pul)
+        session = get_session()
+        r = session.get(message_to_save_pul)
         print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
@@ -248,11 +261,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
         bot.send_message(message.chat.id, "такого поста не существует")
         return 0
 
-
-
-
     soup = b(r.text, 'html.parser')
-
     page_5 = soup.find("div", class_="pagination_expanded").find("span", class_="current")
 
     max_tabs = int(page_5.text)
@@ -262,12 +271,20 @@ def random_post_next(message):  # сей конструкцией мы полу�
     random_tabs_utter = message_to_save_pul + "/" + str(random_tabs)
     print(random_tabs_utter)
 
-    r = requests.get(random_tabs_utter)
+    try:
+        session = get_session()
+        r = session.get(random_tabs_utter)
+        print("try")
+        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+            print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+            return
+    except requests.exceptions.RequestException:
+        print("глобальная ошибка requests")
+        time.sleep(120)
+        return
 
     soup = b(r.text, 'html.parser')
     page_2 = soup.find_all("a", class_="link")
-    # for g in page_2:    #показывает все списки class_="link"
-    #     print(g)
 
     list_post = []
     for item in page_2:
@@ -276,9 +293,21 @@ def random_post_next(message):  # сей конструкцией мы полу�
     print(list_post)
 
     list_post_random = random.choice(list_post)
-
     print("https://joyreactor.cc" + list_post_random)
-    r = requests.get("https://joyreactor.cc" + list_post_random)
+
+    try:
+        session = get_session()
+        r = session.get("https://joyreactor.cc" + list_post_random)
+        print("try")
+        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+            print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+            return
+    except requests.exceptions.RequestException:
+        print("глобальная ошибка requests")
+        time.sleep(120)
+        return
+
+    # r = requests.get("https://joyreactor.cc" + list_post_random)
     # # print(r.status_code)     # статус обработки (200) - всё работает, сайт читается
 
     soup = b(r.text, 'html.parser')
@@ -350,7 +379,8 @@ def random_post_next_10(message):  # сей конструкцией мы пол
         return 0
 
     try:
-        r = requests.get(message_to_save_pul)
+        session = get_session()
+        r = session.get(message_to_save_pul)
         print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
@@ -379,13 +409,23 @@ def random_post_next_10(message):  # сей конструкцией мы пол
         random_tabs_utter = message_to_save_pul + "/" + str(random_tabs)
         print(random_tabs_utter)
 
-        r = requests.get(random_tabs_utter)
+        try:
+            session = get_session()
+            r = session.get(random_tabs_utter)
+            print("try")
+            if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
+                print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+                return
+        except requests.exceptions.RequestException:
+            print("глобальная ошибка requests")
+            time.sleep(120)
+            return
+
+        # r = requests.get(random_tabs_utter)
 
         # собирает все ссылки на посты в приделах одной странице
         soup = b(r.text, 'html.parser')
         page_2 = soup.find_all("a", class_="link")
-        # for g in page_2:    #показывает все списки class_="link"
-        #     print(g)
 
         list_post = []
         for item in page_2:
@@ -396,7 +436,21 @@ def random_post_next_10(message):  # сей конструкцией мы пол
         list_post_random = random.choice(list_post)
 
         print("https://joyreactor.cc" + list_post_random)
-        r = requests.get("https://joyreactor.cc" + list_post_random)
+
+        try:
+            session = get_session()
+            r = session.get("https://joyreactor.cc" + list_post_random)
+
+            print("try")
+            if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
+                print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
+                return
+        except requests.exceptions.RequestException:
+            print("глобальная ошибка requests")
+            time.sleep(120)
+            return
+
+        # r = requests.get("https://joyreactor.cc" + list_post_random)
         # # print(r.status_code)     # статус обработки (200) - всё работает, сайт читается
 
         soup = b(r.text, 'html.parser')
