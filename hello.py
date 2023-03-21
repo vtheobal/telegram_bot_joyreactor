@@ -57,34 +57,7 @@ def hello(message):
 
                 page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div",
                                                                                                          class_="image")
-                i = 0
-                list_href = list()
-                list_src = list()
-                print(len(page_2))
-                while i < (len(page_2)):
-
-                    page_3 = pars_param_src(page_2[i])
-                    page_4 = pars_param_href(page_2[i])
-                    print("src = ", page_3)
-                    print("href = ", page_4)
-                    i += 1
-
-                    if page_3 != 0 and page_4 != 0 and page_4 != "javascript:":
-                        print('Метод сортировки 1')
-                        list_href.append('https:' + page_4)
-
-                    elif page_3 != 0 and page_4 == 0:
-                        print('Метод сортировки 2')
-                        list_src.append('https:' + page_3)
-
-                    elif page_3 != 0 and page_4 != 0 and page_4 == "javascript:":
-                        print('Метод сортировки 3')
-                        list_src.append('https:' + page_3)
-
-                # print(list_href)
-                # print(list_src)
-
-                push_telegramm(list_href, list_src, message)
+                cort_content(page_2, message)
 
             list_exit.clear()  # чистим список после выгрузки постов
         time.sleep(timer)
