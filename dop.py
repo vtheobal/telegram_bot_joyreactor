@@ -9,11 +9,11 @@ def pars_new_post(URL, user_id):
         print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
-            return
+            return 0
     except requests.exceptions.RequestException:
         print("глобальная ошибка requests")
         time.sleep(120)
-        return
+        return 0
 
     # r = requests.get(URL)
     # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается

@@ -17,6 +17,9 @@ def hello(message):
 
         for URL in meta_list:
             list_exit = pars_new_post(URL, str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
+            if list_exit == 0:
+                continue
+
             if list_exit:
                 bot.send_message(message.chat.id, URL)
             for item in list_exit:

@@ -163,7 +163,6 @@ def pull(message):  # сей конструкцией мы получаем те
     try:
         session = get_session()
         r = session.get(message_to_save_pul)
-        print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
@@ -197,7 +196,6 @@ def pull(message):  # сей конструкцией мы получаем те
         return 0
 
     page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
-
 
     i = 0
     list_href = list()
@@ -247,7 +245,6 @@ def random_post_next(message):  # сей конструкцией мы полу�
     try:
         session = get_session()
         r = session.get(message_to_save_pul)
-        print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
@@ -274,7 +271,6 @@ def random_post_next(message):  # сей конструкцией мы полу�
     try:
         session = get_session()
         r = session.get(random_tabs_utter)
-        print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
@@ -298,7 +294,6 @@ def random_post_next(message):  # сей конструкцией мы полу�
     try:
         session = get_session()
         r = session.get("https://joyreactor.cc" + list_post_random)
-        print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
@@ -381,7 +376,6 @@ def random_post_next_10(message):  # сей конструкцией мы пол
     try:
         session = get_session()
         r = session.get(message_to_save_pul)
-        print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
@@ -412,7 +406,6 @@ def random_post_next_10(message):  # сей конструкцией мы пол
         try:
             session = get_session()
             r = session.get(random_tabs_utter)
-            print("try")
             if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
                 print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                 return
@@ -440,8 +433,6 @@ def random_post_next_10(message):  # сей конструкцией мы пол
         try:
             session = get_session()
             r = session.get("https://joyreactor.cc" + list_post_random)
-
-            print("try")
             if r.status_code != 200:  # статус обработки (200) - всё заебок, сайт читается
                 print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                 return
