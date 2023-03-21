@@ -184,3 +184,33 @@ def get_session():
         'Pragma':'no-cache',
         'Cache-Control':'no-cache'}
     return cfscrape.create_scraper(sess=session)
+
+def cort_content(page_2, message):
+    i = 0
+    list_href = list()
+    list_src = list()
+    print(len(page_2))
+    while i < (len(page_2)):
+
+        object_src = pars_param_src(page_2[i])
+        object_href = pars_param_href(page_2[i])
+        print("src = ", object_src)
+        print("href = ", object_href)
+        i += 1
+
+        if object_src != 0 and object_href != 0 and object_href != "javascript:":
+            print('Метод сортировки 1')
+            list_href.append('https:' + object_href)
+
+        elif object_src != 0 and object_href == 0:
+            print('Метод сортировки 2')
+            list_src.append('https:' + object_src)
+
+        elif object_src != 0 and object_href != 0 and object_href == "javascript:":
+            print('Метод сортировки 3')
+            list_src.append('https:' + object_src)
+
+    print('list_href = ', list_href)
+    print('list_src = ', list_src)
+
+    push_telegramm(list_href, list_src, message)

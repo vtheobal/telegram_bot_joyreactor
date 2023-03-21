@@ -34,7 +34,7 @@ def test(message):
 
 @bot.message_handler(commands=['add'])  # команда берёт текст, который мы отправляем после команды '/add'
 def add(message):
-    sent = bot.reply_to(message, 'пришлите мне нового автора, которого хотите отслеживать')
+    sent = bot.reply_to(message, 'пришли ссылку тега/автора, которого хочешь отслеживать')
     bot.register_next_step_handler(sent, review)
 
 
@@ -89,7 +89,7 @@ def review(message):  # сей конструкцией мы получаем т
 
 @bot.message_handler(commands=['remove'])  # команда берёт текст, который мы отправляем после команды '/remove'
 def remove(message):
-    sent = bot.reply_to(message, 'какого автора/тег надо удалить?')
+    sent = bot.reply_to(message, 'какой тег/автора надо удалить?')
     bot.register_next_step_handler(sent, review1)
 
 
@@ -117,7 +117,7 @@ def review1(message):  # сей конструкцией мы получаем �
 
         json_remove_avtor(message_to_save_remove,
                           str(message.from_user.id))  # модуль, удаляющий в json автора (в качестве аргумента передаётся URL)
-        bot.send_message(message.chat.id, "автор/тег удалён из списка")
+        bot.send_message(message.chat.id, "тег/автор удалён из списка")
 
     else:
         bot.send_message(message.chat.id, "Передан не верный URL. URL имеет тип https://joyreactor.cc/tag/..." +
@@ -147,7 +147,7 @@ def list_chek(message):
 
 @bot.message_handler(commands=['one_post'])
 def one_post(message):
-    buf = bot.reply_to(message, 'в ответ скинь мне ссылку на пост')
+    buf = bot.reply_to(message, 'пришли ссылку на пост, чтобы увидеть его контент')
     bot.register_next_step_handler(buf, pull)
 
 
@@ -197,39 +197,12 @@ def pull(message):  # сей конструкцией мы получаем те
 
     page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-    i = 0
-    list_href = list()
-    list_src = list()
-    print(len(page_2))
-    while i < (len(page_2)):
-
-        object_src = pars_param_src(page_2[i])
-        object_href = pars_param_href(page_2[i])
-        print("src = ", object_src)
-        print("href = ", object_href)
-        i += 1
-
-        if object_src != 0 and object_href != 0 and object_href != "javascript:":
-            print('Метод сортировки 1')
-            list_href.append('https:' + object_href)
-
-        elif object_src != 0 and object_href == 0:
-            print('Метод сортировки 2')
-            list_src.append('https:' + object_src)
-
-        elif object_src != 0 and object_href != 0 and object_href == "javascript:":
-            print('Метод сортировки 3')
-            list_src.append('https:' + object_src)
-
-    print('list_href = ', list_href)
-    print('list_src = ', list_src)
-
-    push_telegramm(list_href, list_src, message)
+    cort_content(page_2, message)
 
 
 @bot.message_handler(commands=['random_post'])
 def random_post(message):
-    buf = bot.reply_to(message, 'кинь ссылку автора чтобы я вернул тебе рандомный пост')
+    buf = bot.reply_to(message, 'пришли ссылку автора чтобы увидеть рандомный пост')
     bot.register_next_step_handler(buf, random_post_next)
 
 
@@ -326,41 +299,12 @@ def random_post_next(message):  # сей конструкцией мы полу�
     # собирает весь контент в посте и сортирует на обработку
     page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-    i = 0
-    list_href = list()
-    list_src = list()
-    print(len(page_2))
-    while i < (len(page_2)):
-
-        page_3 = pars_param_src(page_2[i])
-        page_4 = pars_param_href(page_2[i])
-        print("src = ", page_3)
-        print("href = ", page_4)
-        i += 1
-
-        if page_3 != 0 and page_4 != 0 and page_4 != "javascript:":
-            print('Метод сортировки 1')
-            list_href.append('https:' + page_4)
-
-        elif page_3 != 0 and page_4 == 0:
-            print('Метод сортировки 2')
-            list_src.append('https:' + page_3)
-
-        elif page_3 != 0 and page_4 != 0 and page_4 == "javascript:":
-            print('Метод сортировки 3')
-            list_src.append('https:' + page_3)
-
-    # оставить! проверка модуля сортировки контента
-    # print(list_href)
-    # print(list_src)
-
-    # модуль отправляет контент в telegram
-    push_telegramm(list_href, list_src, message)
+    cort_content(page_2, message)
 
 
 @bot.message_handler(commands=['random_post_10'])
 def random_post(message):
-    buf = bot.reply_to(message, 'кинь ссылку автора чтобы я вернул тебе рандомный пост')
+    buf = bot.reply_to(message, 'пришли ссылку автора чтобы увидеть 10 рандомных пост')
     bot.register_next_step_handler(buf, random_post_next_10)
 
 
@@ -465,36 +409,7 @@ def random_post_next_10(message):  # сей конструкцией мы пол
         # собирает весь контент в посте и сортирует на обработку
         page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-        i = 0
-        list_href = list()
-        list_src = list()
-        print(len(page_2))
-        while i < (len(page_2)):
-
-            page_3 = pars_param_src(page_2[i])
-            page_4 = pars_param_href(page_2[i])
-            print("src = ", page_3)
-            print("href = ", page_4)
-            i += 1
-
-            if page_3 != 0 and page_4 != 0 and page_4 != "javascript:":
-                print('Метод сортировки 1')
-                list_href.append('https:' + page_4)
-
-            elif page_3 != 0 and page_4 == 0:
-                print('Метод сортировки 2')
-                list_src.append('https:' + page_3)
-
-            elif page_3 != 0 and page_4 != 0 and page_4 == "javascript:":
-                print('Метод сортировки 3')
-                list_src.append('https:' + page_3)
-
-        # оставить! проверка модуля сортировки контента
-        # print(list_href)
-        # print(list_src)
-
-        # модуль отправляет контент в telegram
-        push_telegramm(list_href, list_src, message)
+        cort_content(page_2, message)
 
 
 @bot.message_handler(commands=['start'])
@@ -505,7 +420,6 @@ def start_bot(message):
         json.dump(list1, file, indent=4)
         print("создан json файле пользователя")
     file.close()
-
 
     if os.path.isfile('json_folder/' + str(message.chat.id) + '.json'):
         with open('json_folder/user_id.json', 'r') as file:
