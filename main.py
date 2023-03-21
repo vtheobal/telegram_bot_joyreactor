@@ -178,26 +178,12 @@ def pull(message):  # сей конструкцией мы получаем те
 
     soup = b(r.text, 'html.parser')
 
-    if valid_page_2_video(soup) == 1:  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
-        page_2 = soup.find_all("iframe", class_="youtube-player")
-        r = list()
-
-        if len(page_2) != 0:
-            for g in page_2:
-                r.append(g.get("src"))
-            bot.send_message(message.chat.id, '\n'.join(r))
-            # return 0
-
-    #     bot.send_message(message.chat.id, '\n'.join(r))
-
-    if valid_page_2(soup) == 0:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
-        bot.send_message(message.chat.id,
-                         message_to_save_pul + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
-        return 0
+    if valid_link_and_video_link(soup=soup, message_text=message_to_save_pul, message=message) == 0:
+        return
 
     page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-    cort_content(page_2, message)
+    sort_content(page_2, message)
 
 
 @bot.message_handler(commands=['random_post'])
@@ -280,26 +266,13 @@ def random_post_next(message):  # сей конструкцией мы полу�
 
     soup = b(r.text, 'html.parser')
 
-    if valid_page_2_video(
-            soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнорируя весь остальной контент в посте
-        print("111")
-        page_2 = soup.find_all("iframe", class_="youtube-player")
-        r = list()
-
-        if len(page_2) != 0:
-            for g in page_2:
-                r.append(g.get("src"))
-            bot.send_message(message.chat.id, '\n'.join(r))
-            # continue
-
-    if valid_page_2(soup) == 0:
-        bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
-        return 0
+    if valid_link_and_video_link(soup=soup, message_text=message_to_save_pul, message=message) == 0:
+        return
 
     # собирает весь контент в посте и сортирует на обработку
     page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-    cort_content(page_2, message)
+    sort_content(page_2, message)
 
 
 @bot.message_handler(commands=['random_post_10'])
@@ -390,26 +363,13 @@ def random_post_next_10(message):  # сей конструкцией мы пол
 
         soup = b(r.text, 'html.parser')
 
-        if valid_page_2_video(
-                soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнорируя весь остальной контент в посте
-            print("111")
-            page_2 = soup.find_all("iframe", class_="youtube-player")
-            r = list()
+        if valid_link_and_video_link(soup=soup, message_text=message_to_save_pul, message=message) == 0:
+            continue
 
-            if len(page_2) != 0:
-                for g in page_2:
-                    r.append(g.get("src"))
-                bot.send_message(message.chat.id, '\n'.join(r))
-                # continue
-
-        if valid_page_2(soup) == 0:
-            bot.send_message(message.chat.id, "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
-            return 0
-
-        # собирает весь контент в посте и сортирует на обработку
+        # собирает весь контент в посте и отправляем на сортировку
         page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div", class_="image")
 
-        cort_content(page_2, message)
+        sort_content(page_2, message)
 
 
 @bot.message_handler(commands=['start'])

@@ -112,6 +112,52 @@ def pars_param_href(
     except Exception as _ex:
         return 0
 
+
+def get_session():
+    session = requests.Session()
+    session.headers = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
+        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language':'ru,en-US;q=0.5',
+        'Accept-Encoding':'gzip, deflate, br',
+        'DNT':'1',
+        'Connection':'keep-alive',
+        'Upgrade-Insecure-Requests':'1',
+        'Pragma':'no-cache',
+        'Cache-Control':'no-cache'}
+    return cfscrape.create_scraper(sess=session)
+
+def sort_content(page_2, message):
+    i = 0
+    list_href = list()
+    list_src = list()
+    print(len(page_2))
+    while i < (len(page_2)):
+
+        object_src = pars_param_src(page_2[i])
+        object_href = pars_param_href(page_2[i])
+        print("src = ", object_src)
+        print("href = ", object_href)
+        i += 1
+
+        if object_src != 0 and object_href != 0 and object_href != "javascript:":
+            print('Метод сортировки 1')
+            list_href.append('https:' + object_href)
+
+        elif object_src != 0 and object_href == 0:
+            print('Метод сортировки 2')
+            list_src.append('https:' + object_src)
+
+        elif object_src != 0 and object_href != 0 and object_href == "javascript:":
+            print('Метод сортировки 3')
+            list_src.append('https:' + object_src)
+
+    print('list_href = ', list_href)
+    print('list_src = ', list_src)
+
+    push_telegramm(list_href, list_src, message)
+
+
 def push_telegramm(list_href, list_src, message):
     try:
 
@@ -169,47 +215,19 @@ def push_telegramm(list_href, list_src, message):
 
     except Exception as _ex:
         print("не прочиталось!")
+        bot.send_message(message.chat.id, "telegram не смог выгрузить контент")
 
-def get_session():
-    session = requests.Session()
-    session.headers = {
-        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0)   Gecko/20100101 Firefox/69.0',
-        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language':'ru,en-US;q=0.5',
-        'Accept-Encoding':'gzip, deflate, br',
-        'DNT':'1',
-        'Connection':'keep-alive',
-        'Upgrade-Insecure-Requests':'1',
-        'Pragma':'no-cache',
-        'Cache-Control':'no-cache'}
-    return cfscrape.create_scraper(sess=session)
+def valid_link_and_video_link(soup, message_text, message):
+    if valid_page_2_video(soup) == 1:  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
+        page_2 = soup.find_all("iframe", class_="youtube-player")
+        r = list()
 
-def cort_content(page_2, message):
-    i = 0
-    list_href = list()
-    list_src = list()
-    print(len(page_2))
-    while i < (len(page_2)):
+        if len(page_2) != 0:
+            for g in page_2:
+                r.append(g.get("src"))
+            bot.send_message(message.chat.id, '\n'.join(r))
 
-        object_src = pars_param_src(page_2[i])
-        object_href = pars_param_href(page_2[i])
-        print("src = ", object_src)
-        print("href = ", object_href)
-        i += 1
-
-        if object_src != 0 and object_href != 0 and object_href != "javascript:":
-            print('Метод сортировки 1')
-            list_href.append('https:' + object_href)
-
-        elif object_src != 0 and object_href == 0:
-            print('Метод сортировки 2')
-            list_src.append('https:' + object_src)
-
-        elif object_src != 0 and object_href != 0 and object_href == "javascript:":
-            print('Метод сортировки 3')
-            list_src.append('https:' + object_src)
-
-    print('list_href = ', list_href)
-    print('list_src = ', list_src)
-
-    push_telegramm(list_href, list_src, message)
+    if valid_page_2(soup) == 0:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
+        bot.send_message(message.chat.id,
+                         message_text + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
+        return 0

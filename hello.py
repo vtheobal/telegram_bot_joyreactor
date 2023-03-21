@@ -38,26 +38,12 @@ def hello(message):
 
                 soup = b(r.text, 'html.parser')
 
-                if valid_page_2_video(
-                        soup) == 1:  # обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивыает в try except - смотрит есть ли в блоке с медиа файлы на ютуб если есть, то выгружает только ссылки на ютуб, игнарируя весь остальной контент в посте
-                    print("youtube-link")
-                    page_2 = soup.find_all("iframe", class_="youtube-player")
-                    r = list()
-
-                    if len(page_2) != 0:
-                        for g in page_2:
-                            r.append(g.get("src"))
-                        bot.send_message(message.chat.id, '\n'.join(r))
-                        # continue
-
-                if valid_page_2(soup) == 0:
-                    bot.send_message(message.chat.id,
-                                     "https://joyreactor.cc" + item + " не удаётся распарсить контейнер с данными. Возможно контент заблокирован администрацией")
+                if valid_link_and_video_link(soup=soup, message_text=item, message=message) == 0:
                     continue
 
                 page_2 = soup.find("div", class_="post_top").find("div", class_="post_content").find_all("div",
                                                                                                          class_="image")
-                cort_content(page_2, message)
+                sort_content(page_2, message)
 
             list_exit.clear()  # чистим список после выгрузки постов
         time.sleep(timer)
