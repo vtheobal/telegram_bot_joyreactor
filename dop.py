@@ -6,7 +6,6 @@ def pars_new_post(URL, user_id):
     try:
         session = get_session()
         r = session.get(URL)
-        print("try")
         if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return 0
