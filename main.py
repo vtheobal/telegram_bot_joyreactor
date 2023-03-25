@@ -3,12 +3,9 @@ from work_with_json import *
 from hello import *
 from config import *
 
-flag_go = 0
-
 
 @bot.message_handler(commands=['go'])
 def test(message):
-    # global flag_go
 
     if os.path.isfile('json_folder/' + str(message.chat.id) + '.json'):
         with open('json_folder/user_id.json', 'r') as file:
@@ -65,7 +62,6 @@ def review(message):  # сей конструкцией мы получаем т
             print("глобальная ошибка requests")
             time.sleep(120)
             return
-        # r = requests.get(message_to_save_add)
 
         one_post = pars_one_post(r)  # модуль парсера для поиска одного первого поста
         if one_post == "404":
@@ -137,12 +133,8 @@ def list_chek(message):
         return 0
 
     list_chek = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
-    print(list_chek)
-
+    print('\n'.join(list_chek))
     bot.send_message(message.chat.id, '\n'.join(list_chek))
-
-    buf = str(message.from_user.id)
-    print(type(buf))
 
 
 @bot.message_handler(commands=['one_post'])
@@ -163,7 +155,7 @@ def pull(message):  # сей конструкцией мы получаем те
     try:
         session = get_session()
         r = session.get(message_to_save_pul)
-        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+        if r.status_code != 200:
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
@@ -204,7 +196,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
     try:
         session = get_session()
         r = session.get(message_to_save_pul)
-        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+        if r.status_code != 200:
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
@@ -253,16 +245,13 @@ def random_post_next(message):  # сей конструкцией мы полу�
     try:
         session = get_session()
         r = session.get("https://joyreactor.cc" + list_post_random)
-        if r.status_code != 200:    # статус обработки (200) - всё заебок, сайт читается
+        if r.status_code != 200:
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
         print("глобальная ошибка requests")
         time.sleep(120)
         return
-
-    # r = requests.get("https://joyreactor.cc" + list_post_random)
-    # # print(r.status_code)     # статус обработки (200) - всё работает, сайт читается
 
     soup = b(r.text, 'html.parser')
 
@@ -331,8 +320,6 @@ def random_post_next_10(message):  # сей конструкцией мы пол
             time.sleep(120)
             return
 
-        # r = requests.get(random_tabs_utter)
-
         # собирает все ссылки на посты в приделах одной странице
         soup = b(r.text, 'html.parser')
         page_2 = soup.find_all("a", class_="link")
@@ -357,9 +344,6 @@ def random_post_next_10(message):  # сей конструкцией мы пол
             print("глобальная ошибка requests")
             time.sleep(120)
             return
-
-        # r = requests.get("https://joyreactor.cc" + list_post_random)
-        # # print(r.status_code)     # статус обработки (200) - всё работает, сайт читается
 
         soup = b(r.text, 'html.parser')
 

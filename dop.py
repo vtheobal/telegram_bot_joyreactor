@@ -60,17 +60,17 @@ def pars_new_post(URL, user_id):
 
 
 def pars_one_post(r):
-    # r = requests.get(message_to_save)       # модуль парсера для поиска отдного первого поста
     
     if r.status_code == 200:
-    # print(r.status_code)     # статус обработки (200) - всё заебок, сайт читается
         soup = b(r.text, 'html.parser')
 
+    try:
         page_2 = soup.find("a", class_="link")
         item_url = page_2.get("href")
         print(item_url)
         return item_url
-    else:
+
+    except Exception as _ex:
         return "404"
 
 
@@ -92,8 +92,7 @@ def valid_page_2_video(soup):
         return 0
 
 
-def pars_param_src(
-        buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
+def pars_param_src(buff):
 
     try:
         page_3 = buff.img.get("src")
@@ -102,8 +101,8 @@ def pars_param_src(
     except Exception as _ex:
         return 0
 
-def pars_param_href(
-        buff):  # функция для проверки класса на возможность пропарсить объекты класса тегом "src"  # если не парситься, то return 0
+
+def pars_param_href(buff):
 
     try:
         page_3 = buff.a.get("href")
@@ -126,6 +125,7 @@ def get_session():
         'Pragma':'no-cache',
         'Cache-Control':'no-cache'}
     return cfscrape.create_scraper(sess=session)
+
 
 def sort_content(page_2, message):
     i = 0
@@ -155,10 +155,10 @@ def sort_content(page_2, message):
     print('list_href = ', list_href)
     print('list_src = ', list_src)
 
-    push_telegramm(list_href, list_src, message)
+    push_telegram(list_href, list_src, message)
 
 
-def push_telegramm(list_href, list_src, message):
+def push_telegram(list_href, list_src, message):
     try:
 
         if len(list_href) == 0:
@@ -214,8 +214,9 @@ def push_telegramm(list_href, list_src, message):
             bot.send_media_group(message.chat.id, r)
 
     except Exception as _ex:
-        print("не прочиталось!")
-        bot.send_message(message.chat.id, "telegram не смог выгрузить контент")
+        print("telegram не выгрузил контент!")
+        bot.send_message(message.chat.id, "telegram не выгрузил контент")
+
 
 def valid_link_and_video_link(soup, message_text, message):
     if valid_page_2_video(soup) == 1:  # ссылка на ютуб!  обращение к функции из файла dop - функция чекает строчку ниже на читаемость и оборачивает в try except
