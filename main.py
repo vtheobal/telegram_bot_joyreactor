@@ -408,15 +408,14 @@ if __name__ == '__main__':
     with open('json_folder/user_id.json', 'r') as file:
         meta = json.load(file)
     file.close()
-    print(meta)
 
     for _ in meta:
+        gg = 'https://api.telegram.org/bot' + API_KEY + '/sendMessage?chat_id='+_+'&text=На боте проводились технические работы. Для возобновления работы нажмите /go'
+        requests.get(gg)
         meta[_] = 0
-    print(meta)
 
     with open('json_folder/user_id.json', 'w') as file:
         json.dump(meta, file, indent=4)
     file.close()
-
 
 bot.polling()
