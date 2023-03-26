@@ -16,7 +16,7 @@ def hello(message):
         meta_list = list(meta.keys())  # делаем из словаря список с ключами, в нашем случае это URL ссылки
 
         for URL in meta_list:
-            list_exit = pars_new_post(URL, str(message.from_user.id))  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
+            list_exit = pars_new_post(URL, str(message.from_user.id), message)  # пишем в переменную list_exit наш список постов, которые надо выгрузить (значение приходит из парсера функции pars_new_post)
             if list_exit == 0:
                 continue
 
@@ -31,7 +31,7 @@ def hello(message):
                         print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                         continue
                 except requests.exceptions.RequestException:
-                    print("глобальная ошибка requests")
+                    print(f"глобальная ошибка requests", message.from_user.id)
                     time.sleep(120)
                     continue
 

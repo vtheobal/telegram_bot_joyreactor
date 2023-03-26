@@ -59,7 +59,7 @@ def review(message):  # сей конструкцией мы получаем т
                 print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                 return
         except requests.exceptions.RequestException:
-            print("глобальная ошибка requests")
+            print(f"глобальная ошибка requests", message.from_user.id)
             time.sleep(120)
             return
 
@@ -159,7 +159,7 @@ def pull(message):  # сей конструкцией мы получаем те
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
-        print("глобальная ошибка requests")
+        print(f"глобальная ошибка requests", message.from_user.id)
         time.sleep(120)
         return
 
@@ -200,7 +200,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
-        print("глобальная ошибка requests")
+        print(f"глобальная ошибка requests", message.from_user.id)
         time.sleep(120)
         return
 
@@ -226,7 +226,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
-        print("глобальная ошибка requests")
+        print(f"глобальная ошибка requests", message.from_user.id)
         time.sleep(120)
         return
 
@@ -249,7 +249,7 @@ def random_post_next(message):  # сей конструкцией мы полу�
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
-        print("глобальная ошибка requests")
+        print(f"глобальная ошибка requests", message.from_user.id)
         time.sleep(120)
         return
 
@@ -286,7 +286,7 @@ def random_post_next_10(message):  # сей конструкцией мы пол
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return
     except requests.exceptions.RequestException:
-        print("глобальная ошибка requests")
+        print(f"глобальная ошибка requests", message.from_user.id)
         time.sleep(120)
         return
 
@@ -316,7 +316,7 @@ def random_post_next_10(message):  # сей конструкцией мы пол
                 print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                 return
         except requests.exceptions.RequestException:
-            print("глобальная ошибка requests")
+            print(f"глобальная ошибка requests", message.from_user.id)
             time.sleep(120)
             return
 
@@ -341,7 +341,7 @@ def random_post_next_10(message):  # сей конструкцией мы пол
                 print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
                 return
         except requests.exceptions.RequestException:
-            print("глобальная ошибка requests")
+            print(f"глобальная ошибка requests", message.from_user.id)
             time.sleep(120)
             return
 

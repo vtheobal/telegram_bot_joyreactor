@@ -1,6 +1,6 @@
 from config import *
 
-def pars_new_post(URL, user_id):
+def pars_new_post(URL, user_id, message):
 
     # парснг часть, которая пробегается по всем постам (на выходе есть список,  но чуть ниже не могу его обработать в for цикле)
     try:
@@ -10,7 +10,7 @@ def pars_new_post(URL, user_id):
             print(f"ошибка парсера requests - r.status_code != 200", r.status_code)
             return 0
     except requests.exceptions.RequestException:
-        print("глобальная ошибка requests")
+        print(f"глобальная ошибка requests", message.from_user.id)
         time.sleep(120)
         return 0
 
@@ -47,7 +47,6 @@ def pars_new_post(URL, user_id):
         if item_url == last_post:
             # print("good job")
             break
-
 
     # в словаре, выгруженном из json меням у конкретного ключа значение на первый пост
     meta[URL] = list[0]
