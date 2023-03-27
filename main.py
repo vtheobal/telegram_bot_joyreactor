@@ -11,7 +11,6 @@ def test(message):
         with open('json_folder/user_id.json', 'r') as file:
             meta = json.load(file)
         file.close()
-        print(meta)
 
         if meta[str(message.chat.id)] == 0:
             globals()[message.from_user.id] = threading.Thread(target=hello, args=(message,), name=message.from_user.id)
@@ -25,6 +24,7 @@ def test(message):
             print(f"поток {message.from_user.id} запущен")
             bot.send_message(message.chat.id, "Поток уже запущен!")
 
+        print(meta)
     else:
         print("json файл пользователя не найден")
 
